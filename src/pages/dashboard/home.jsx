@@ -1,4 +1,5 @@
-import React from "react";
+// import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Typography,
   Card,
@@ -17,7 +18,7 @@ import {
   EllipsisVerticalIcon,
   ArrowUpIcon,
 } from "@heroicons/react/24/outline";
-import { StatisticsCard } from "@/widgets/cards";
+import { MessageCard, StatisticsCard, MovieCard } from "@/widgets/cards";
 import { StatisticsChart } from "@/widgets/charts";
 import {
   statisticsCardsData,
@@ -29,8 +30,37 @@ import { CheckCircleIcon, ClockIcon } from "@heroicons/react/24/solid";
 
 export function Home() {
   
+  // FUNCTION FOR CALL THE MOVIES
+  const [movies, setMovies] = useState([]);
+
+  useEffect(() => {
+    fetch("https://api.themoviedb.org/3/movie/now_playing?api_key=ffa3a8b6f577c6aefd2d2a8540752b2d")
+      .then((res) => res.json())
+      .then((data) => {
+        setMovies(data.results); // results es donde viene el array de pelis
+      })
+      .catch((error) => console.error("Error fetching movies:", error));
+  }, []);
+  // 
+
   return (
-    <div className="mt-12">
+     <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      {movies.map((m) => (
+        <MovieCard
+          key={m.id}
+          poster_path={m.poster_path}
+          original_title={m.original_title}
+          vote_average={m.vote_average}
+        />
+      ))}
+    </div>
+  );
+}
+
+export default Home;
+
+
+
 {/*       
       <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
         {statisticsCardsData.map(({ icon, title, footer, ...rest }) => (
@@ -253,8 +283,3 @@ export function Home() {
           </CardBody>
         </Card>
       </div> */}
-    </div>
-  );
-}
-
-export default Home;
