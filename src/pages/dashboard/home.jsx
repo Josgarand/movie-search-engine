@@ -1,64 +1,72 @@
 // import React from "react";
 import React, { useState, useEffect } from "react";
-import {
-  Typography,
-  Card,
-  CardHeader,
-  CardBody,
-  IconButton,
-  Menu,
-  MenuHandler,
-  MenuList,
-  MenuItem,
-  Avatar,
-  Tooltip,
-  Progress,
-} from "@material-tailwind/react";
-import {
-  EllipsisVerticalIcon,
-  ArrowUpIcon,
-} from "@heroicons/react/24/outline";
-import { MessageCard, StatisticsCard, MovieCard } from "@/widgets/cards";
-import { StatisticsChart } from "@/widgets/charts";
-import {
-  statisticsCardsData,
-  statisticsChartsData,
-  projectsTableData,
-  ordersOverviewData,
-} from "@/data";
-import { CheckCircleIcon, ClockIcon } from "@heroicons/react/24/solid";
+import { Button } from "@material-tailwind/react";
+import { MovieCard } from "@/widgets/cards";
 
 export function Home() {
-  
-  // FUNCTION FOR CALL THE MOVIES
   const [movies, setMovies] = useState([]);
+  const [filter, setFilter] = useState("now_playing"); // por defecto cartelera
 
+  // FUNCTION FOR CALL THE MOVIES
   useEffect(() => {
-    fetch("https://api.themoviedb.org/3/movie/now_playing?api_key=ffa3a8b6f577c6aefd2d2a8540752b2d")
+    fetch(
+      `https://api.themoviedb.org/3/movie/${filter}?api_key=ffa3a8b6f577c6aefd2d2a8540752b2d&language=es-ES`
+    )
       .then((res) => res.json())
       .then((data) => {
-        setMovies(data.results); // results es donde viene el array de pelis
+        setMovies(data.results);
       })
       .catch((error) => console.error("Error fetching movies:", error));
-  }, []);
-  // 
+  }, [filter]);
 
   return (
-     <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      {movies.map((m) => (
-        <MovieCard
-          key={m.id}
-          poster_path={m.poster_path}
-          original_title={m.original_title}
-          vote_average={m.vote_average}
-        />
-      ))}
+    <div className="p-6">
+     
+
+      {/* BOTONES DE FILTRO */}
+      <div className="flex flex-wrap gap-4 mb-8 justify-center">
+        <Button
+          onClick={() => setFilter("now_playing")}
+          className={filter === "now_playing" ? "from-black to-black border-gray-200" : "bg-gray-400"}
+        >
+          En cartelera
+        </Button>
+        <Button
+          onClick={() => setFilter("popular")}
+          className={filter === "popular" ? "from-black to-black border-gray-200" : "bg-gray-400"}
+        >
+          Populares
+        </Button>
+        <Button
+          onClick={() => setFilter("upcoming")}
+          className={filter === "upcoming" ? "from-black to-black border-gray-200" : "bg-gray-400"}
+        >
+          Próximos estrenos
+        </Button>
+        <Button
+          onClick={() => setFilter("top_rated")}
+          className={filter === "top_rated" ? "from-black to-black border-gray-200" : "bg-gray-400"}
+        >
+          Mejor valoradas
+        </Button>
+      </div>
+
+      {/* GRID DE PELÍCULAS */}
+      <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {movies.map((m) => (
+          <MovieCard
+            key={m.id}
+            poster_path={m.poster_path}
+            original_title={m.original_title}
+            vote_average={m.vote_average}
+          />
+        ))}
+      </div>
     </div>
   );
 }
 
 export default Home;
-
 
 
 {/*       
