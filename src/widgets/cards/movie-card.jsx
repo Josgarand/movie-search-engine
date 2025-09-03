@@ -1,10 +1,34 @@
 import React, { useState } from "react";
-import { Card, CardHeader, CardBody, CardFooter, Typography, Button, Chip } from "@material-tailwind/react";
-import { MovieModal } from "../modal/movie-modal"; // ruta correcta
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Typography,
+  Button,
+  Chip,
+} from "@material-tailwind/react";
+import { CalendarIcon } from "@heroicons/react/24/solid";
+import { MovieModal } from "../modal/movie-modal";
 
-export function MovieCard({ poster_path, title, vote_average, release_date, overview }) {
+export function MovieCard({ poster_path, title, vote_average, release_date, id }) {
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(!open);
+  const [movieData, setMovieData] = useState(null);
+
+  const handleOpen = async () => {
+    if (!open) {
+      try {
+        const res = await fetch(
+          `https://api.themoviedb.org/3/movie/${id}?api_key=ffa3a8b6f577c6aefd2d2a8540752b2d&language=en-US`
+        );
+        const data = await res.json();
+        setMovieData(data);
+      } catch (error) {
+        console.error("Failed to fetch movie details:", error);
+      }
+    }
+    setOpen(!open);
+  };
 
   return (
     <>
@@ -31,11 +55,14 @@ export function MovieCard({ poster_path, title, vote_average, release_date, over
           >
             {title}
           </Typography>
-          {release_date && (
-            <Typography variant="small" color="gray" className="mb-2">
-              📅 Estreno: {new Date(release_date).toLocaleDateString("es-ES")}
-            </Typography>
-          )}
+          <div className="flex items-center-horizontal gap-1">
+            <CalendarIcon className="h-4 w-4 text-black" />
+            {release_date && (
+              <Typography variant="small" color="gray" className="mb-2">
+                Release: {new Date(release_date).toLocaleDateString("en-US")}
+              </Typography>
+            )}
+          </div>
         </CardBody>
 
         <CardFooter className="flex justify-between items-center p-4 pt-0">
@@ -44,18 +71,13 @@ export function MovieCard({ poster_path, title, vote_average, release_date, over
             onClick={handleOpen}
             className="bg-black text-white rounded-lg px-4 py-2 hover:bg-gray-800 transition"
           >
-            Ver más información
+            More info
           </Button>
         </CardFooter>
       </Card>
 
-      {/* Modal */}
-      {MovieModal && (  // Esto asegura que no falle si el componente aún no está definido
-        <MovieModal
-          open={open}
-          onClose={handleOpen}
-          movie={{ poster_path, title, vote_average, release_date, overview }}
-        />
+      {movieData && (
+        <MovieModal open={open} onClose={handleOpen} movie={movieData} />
       )}
     </>
   );

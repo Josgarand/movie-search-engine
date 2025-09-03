@@ -4,16 +4,15 @@ import { MovieCard } from "@/widgets/cards";
 
 export function Movies() {
   const [movies, setMovies] = useState([]);
-  const [filter, setFilter] = useState("popular"); // por defecto cartelera
-  const [search, setSearch] = useState(""); // NUEVO: estado de búsqueda
-  const [isSearching, setIsSearching] = useState(false); // NUEVO: controla si estamos en modo búsqueda
+  const [filter, setFilter] = useState("popular");
+  const [search, setSearch] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
 
-  // PETICIONES DE FILTRO (popular, now_playing, etc.)
   useEffect(() => {
-    if (isSearching) return; // si estoy buscando, no llamo a los filtros
+    if (isSearching) return;
 
     fetch(
-      `https://api.themoviedb.org/3/movie/${filter}?api_key=ffa3a8b6f577c6aefd2d2a8540752b2d&language=es-ES`
+      `https://api.themoviedb.org/3/movie/${filter}?api_key=ffa3a8b6f577c6aefd2d2a8540752b2d&language=en-US`
     )
       .then((res) => res.json())
       .then((data) => {
@@ -22,18 +21,17 @@ export function Movies() {
       .catch((error) => console.error("Error fetching movies:", error));
   }, [filter, isSearching]);
 
-  // FUNCIÓN DE BÚSQUEDA
   const handleSearch = (e) => {
     e.preventDefault();
     if (!search.trim()) {
-      setIsSearching(false); // si no hay texto, vuelvo a filtros normales
+      setIsSearching(false);
       return;
     }
 
     setIsSearching(true);
 
     fetch(
-      `https://api.themoviedb.org/3/search/movie?api_key=ffa3a8b6f577c6aefd2d2a8540752b2d&language=es-ES&query=${encodeURIComponent(
+      `https://api.themoviedb.org/3/search/movie?api_key=ffa3a8b6f577c6aefd2d2a8540752b2d&language=en-US&query=${encodeURIComponent(
         search
       )}&page=1`
     )
@@ -52,14 +50,13 @@ export function Movies() {
           <input
             type="search"
             value={search}
-            onChange={(e) => setSearch(e.target.value)} // controla el input
+            onChange={(e) => setSearch(e.target.value)}
             className="block w-full p-4 ps-12 text-lg text-gray-900 border border-gray-300 rounded-xl bg-gray-50 focus:ring-black focus:border-black"
             placeholder="Search movies..."
           />
           <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
             <svg
               className="w-6 h-6 text-gray-500"
-              aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 20 20"
@@ -82,12 +79,10 @@ export function Movies() {
         </form>
       </div>
 
-      {/* BOTONES DE FILTRO (solo activos si NO estoy buscando) */}
-      
+      {/* FILTER BUTTONS */}
       {!isSearching && (
         <div className="flex flex-wrap gap-4 mb-8 justify-center">
-
-        <Button
+          <Button
             onClick={() => setFilter("popular")}
             className={`px-6 py-2 rounded-lg ${
               filter === "popular"
@@ -95,7 +90,7 @@ export function Movies() {
                 : "bg-gray-300 text-black"
             }`}
           >
-            Populares
+            Popular
           </Button>
 
           <Button
@@ -106,9 +101,9 @@ export function Movies() {
                 : "bg-gray-300 text-black"
             }`}
           >
-            En cartelera
+            Now Playing
           </Button>
-          
+
           <Button
             onClick={() => setFilter("upcoming")}
             className={`px-6 py-2 rounded-lg ${
@@ -117,8 +112,9 @@ export function Movies() {
                 : "bg-gray-300 text-black"
             }`}
           >
-            Próximos estrenos
+            Upcoming
           </Button>
+
           <Button
             onClick={() => setFilter("top_rated")}
             className={`px-6 py-2 rounded-lg ${
@@ -127,21 +123,21 @@ export function Movies() {
                 : "bg-gray-300 text-black"
             }`}
           >
-            Mejor valoradas
+            Top Rated
           </Button>
         </div>
       )}
 
-      {/* GRID DE PELÍCULAS */}
+      {/* MOVIE GRID */}
       <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {movies.map((m) => (
           <MovieCard
             key={m.id}
+            id={m.id}
             poster_path={m.poster_path}
             title={m.title}
             vote_average={m.vote_average}
             release_date={m.release_date}
-            overview={m.overview}
           />
         ))}
       </div>
@@ -150,7 +146,6 @@ export function Movies() {
 }
 
 export default Movies;
-
 
 
 

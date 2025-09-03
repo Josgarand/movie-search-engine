@@ -9,22 +9,21 @@ import {
   Typography,
 } from "@material-tailwind/react";
 
-export function MovieModal({ open, onClose, movie }) {
-  if (!movie) return null;
+export function TvModal({ open, onClose, tv }) {
+  if (!tv) return null;
 
   const {
     poster_path,
-    title,
-    vote_average,
-    release_date,
+    name,
     overview,
-    original_language,
-    popularity,
-    vote_count,
+    vote_average,
+    first_air_date,
     genres,
+    original_language,
     status,
-    runtime,
-  } = movie;
+    number_of_seasons,
+    number_of_episodes,
+  } = tv;
 
   return (
     <Dialog
@@ -34,7 +33,7 @@ export function MovieModal({ open, onClose, movie }) {
       className="p-4 max-h-[90vh] flex flex-col"
     >
       <DialogHeader className="flex items-center justify-between">
-        <h2 className="text-xl font-bold">{title}</h2>
+        <h2 className="text-xl font-bold">{name}</h2>
         <span className="text-sm text-gray-500">⭐ {vote_average}</span>
       </DialogHeader>
 
@@ -44,21 +43,24 @@ export function MovieModal({ open, onClose, movie }) {
       >
         <img
           src={`https://image.tmdb.org/t/p/w500/${poster_path}`}
-          alt={title}
+          alt={name}
           className="w-full lg:w-1/3 rounded-lg shadow-md object-cover"
         />
 
-        <div className="flex-1 flex flex-col gap-3">
+        <div className="flex-1 space-y-3">
           <p className="text-gray-700">
-            <span className="font-semibold">Release date:</span> {release_date}
+            <span className="font-semibold">First air date:</span>{" "}
+            {first_air_date
+              ? new Date(first_air_date).toLocaleDateString("en-US")
+              : "Unavailable"}
           </p>
 
-          {genres && genres.length > 0 && (
+          {genres?.length > 0 && (
             <div>
               <p className="font-semibold text-gray-700 mb-1">Genres:</p>
               <div className="flex flex-wrap gap-2">
-                {genres.map((genre) => (
-                  <Chip key={genre.id} value={genre.name} size="sm" />
+                {genres.map((g) => (
+                  <Chip key={g.id} value={g.name} />
                 ))}
               </div>
             </div>
@@ -66,30 +68,30 @@ export function MovieModal({ open, onClose, movie }) {
 
           <p className="text-gray-700">
             <span className="font-semibold">Original language:</span>{" "}
-            {original_language?.toUpperCase()}
-          </p>
-
-          {runtime && (
-            <p className="text-gray-700">
-              <span className="font-semibold">Runtime:</span> {runtime} min
-            </p>
-          )}
-
-          <p className="text-gray-700">
-            <span className="font-semibold">Popularity:</span> {popularity}
+            {original_language?.toUpperCase() || "N/A"}
           </p>
 
           <p className="text-gray-700">
-            <span className="font-semibold">Vote count:</span> {vote_count}
+            <span className="font-semibold">Seasons:</span>{" "}
+            {number_of_seasons ?? "N/A"}
           </p>
 
           <p className="text-gray-700">
-            <span className="font-semibold">Status:</span> {status}
+            <span className="font-semibold">Episodes:</span>{" "}
+            {number_of_episodes ?? "N/A"}
+          </p>
+
+          <p className="text-gray-700">
+            <span className="font-semibold">Status:</span>{" "}
+            {status || "N/A"}
           </p>
 
           <div>
             <p className="font-semibold text-gray-700 mb-1">Overview:</p>
-            <Typography variant="small" className="text-gray-600">
+            <Typography
+              variant="small"
+              className="text-gray-600"
+            >
               {overview || "No overview available."}
             </Typography>
           </div>
@@ -104,3 +106,5 @@ export function MovieModal({ open, onClose, movie }) {
     </Dialog>
   );
 }
+
+export default TvModal;

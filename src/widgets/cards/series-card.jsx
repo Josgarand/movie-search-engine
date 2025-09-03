@@ -8,23 +8,37 @@ import {
   Button,
   Chip,
 } from "@material-tailwind/react";
-import { MovieModal } from "../modal/movie-modal"; // puedes usar el mismo modal
+import { TvModal } from "../modal/tv-modal";
+import { CalendarIcon } from "@heroicons/react/24/solid";
 
-export function SeriesCard({ poster_path, name, vote_average, first_air_date, overview }) {
+export function SeriesCard({ poster_path, name, vote_average, first_air_date, overview, id }) {
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(!open);
+  const [tvDetails, setTvDetails] = useState(null);
+
+  const handleOpen = async () => {
+    if (!open && !tvDetails) {
+      try {
+        const res = await fetch(
+          `https://api.themoviedb.org/3/tv/${id}?api_key=ffa3a8b6f577c6aefd2d2a8540752b2d&language=en-US`
+        );
+        const data = await res.json();
+        setTvDetails(data);
+      } catch (error) {
+        console.error("Error fetching series details:", error);
+      }
+    }
+    setOpen(!open);
+  };
 
   return (
     <>
       <Card className="w-full max-w-sm shadow-lg hover:shadow-xl transition-shadow rounded-xl overflow-hidden">
-        {/* Imagen */}
         <CardHeader shadow={false} floated={false} className="relative h-96">
           <img
             src={`https://image.tmdb.org/t/p/w500/${poster_path}`}
             alt={name}
             className="h-full w-full object-cover"
           />
-          {/* Nota */}
           <div className="absolute top-2 right-2">
             <Chip
               value={vote_average ? vote_average.toFixed(1) : "N/A"}
@@ -33,7 +47,6 @@ export function SeriesCard({ poster_path, name, vote_average, first_air_date, ov
           </div>
         </CardHeader>
 
-        {/* Info */}
         <CardBody className="p-4">
           <Typography
             variant="h6"
@@ -42,39 +55,29 @@ export function SeriesCard({ poster_path, name, vote_average, first_air_date, ov
           >
             {name}
           </Typography>
-          {first_air_date && (
-            <Typography variant="small" color="gray" className="mb-2">
-              📺 Primera emisión:{" "}
-              {new Date(first_air_date).toLocaleDateString("es-ES")}
-            </Typography>
-          )}
+          <div className="flex items-center-horizontali gap-1">
+            <CalendarIcon className="h-4 w-4 text-black" />
+            {first_air_date && (
+              <Typography variant="small" color="gray" className="mb-2">
+                First aired: {new Date(first_air_date).toLocaleDateString("en-US")}
+              </Typography>
+            )}
+          </div>
         </CardBody>
 
-        {/* Footer */}
         <CardFooter className="flex justify-between items-center p-4 pt-0">
           <Button
             ripple={true}
             onClick={handleOpen}
             className="bg-black text-white rounded-lg px-4 py-2 hover:bg-gray-800 transition"
           >
-            Ver más información
+            More info
           </Button>
         </CardFooter>
       </Card>
 
-      {/* Modal */}
-      {MovieModal && (
-        <MovieModal
-          open={open}
-          onClose={handleOpen}
-          movie={{
-            poster_path,
-            original_title: name, // 👈 se lo pasamos como title para que el modal lo entienda
-            vote_average,
-            release_date: first_air_date, // 👈 lo pasamos como fecha
-            overview,
-          }}
-        />
+      {tvDetails && (
+        <TvModal open={open} onClose={handleOpen} tv={tvDetails} />
       )}
     </>
   );
