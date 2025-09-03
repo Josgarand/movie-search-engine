@@ -1,4 +1,3 @@
-// import React from "react";
 import React, { useState, useEffect } from "react";
 import { Button } from "@material-tailwind/react";
 import { MovieCard } from "@/widgets/cards";
@@ -6,9 +5,13 @@ import { MovieCard } from "@/widgets/cards";
 export function Home() {
   const [movies, setMovies] = useState([]);
   const [filter, setFilter] = useState("now_playing"); // por defecto cartelera
+  const [search, setSearch] = useState(""); // NUEVO: estado de búsqueda
+  const [isSearching, setIsSearching] = useState(false); // NUEVO: controla si estamos en modo búsqueda
 
-  // FUNCTION FOR CALL THE MOVIES
+  // PETICIONES DE FILTRO (popular, now_playing, etc.)
   useEffect(() => {
+    if (isSearching) return; // si estoy buscando, no llamo a los filtros
+
     fetch(
       `https://api.themoviedb.org/3/movie/${filter}?api_key=ffa3a8b6f577c6aefd2d2a8540752b2d&language=es-ES`
     )
@@ -17,39 +20,113 @@ export function Home() {
         setMovies(data.results);
       })
       .catch((error) => console.error("Error fetching movies:", error));
-  }, [filter]);
+  }, [filter, isSearching]);
+
+  // FUNCIÓN DE BÚSQUEDA
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (!search.trim()) {
+      setIsSearching(false); // si no hay texto, vuelvo a filtros normales
+      return;
+    }
+
+    setIsSearching(true);
+
+    fetch(
+      `https://api.themoviedb.org/3/search/movie?api_key=ffa3a8b6f577c6aefd2d2a8540752b2d&language=es-ES&query=${encodeURIComponent(
+        search
+      )}&page=1`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        setMovies(data.results);
+      })
+      .catch((error) => console.error("Error searching movies:", error));
+  };
 
   return (
     <div className="p-6">
-     
-
-      {/* BOTONES DE FILTRO */}
-      <div className="flex flex-wrap gap-4 mb-8 justify-center">
-        <Button
-          onClick={() => setFilter("now_playing")}
-          className={filter === "now_playing" ? "from-black to-black border-gray-200" : "bg-gray-400"}
-        >
-          En cartelera
-        </Button>
-        <Button
-          onClick={() => setFilter("popular")}
-          className={filter === "popular" ? "from-black to-black border-gray-200" : "bg-gray-400"}
-        >
-          Populares
-        </Button>
-        <Button
-          onClick={() => setFilter("upcoming")}
-          className={filter === "upcoming" ? "from-black to-black border-gray-200" : "bg-gray-400"}
-        >
-          Próximos estrenos
-        </Button>
-        <Button
-          onClick={() => setFilter("top_rated")}
-          className={filter === "top_rated" ? "from-black to-black border-gray-200" : "bg-gray-400"}
-        >
-          Mejor valoradas
-        </Button>
+      {/* SEARCHBAR */}
+      <div className="flex justify-center mb-6">
+        <form onSubmit={handleSearch} className="w-full max-w-2xl relative">
+          <input
+            type="search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)} // controla el input
+            className="block w-full p-4 ps-12 text-lg text-gray-900 border border-gray-300 rounded-xl bg-gray-50 focus:ring-black focus:border-black"
+            placeholder="Search movies..."
+          />
+          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <svg
+              className="w-6 h-6 text-gray-500"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 20 20"
+            >
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+              />
+            </svg>
+          </div>
+          <button
+            type="submit"
+            className="text-white absolute right-2.5 bottom-2.5 bg-black hover:bg-gray-700 focus:ring-2 focus:outline-none focus:ring-gray-400 font-medium rounded-lg text-sm px-5 py-2"
+          >
+            Search
+          </button>
+        </form>
       </div>
+
+      {/* BOTONES DE FILTRO (solo activos si NO estoy buscando) */}
+      {!isSearching && (
+        <div className="flex flex-wrap gap-4 mb-8 justify-center">
+          <Button
+            onClick={() => setFilter("now_playing")}
+            className={`px-6 py-2 rounded-lg ${
+              filter === "now_playing"
+                ? "bg-black text-white"
+                : "bg-gray-300 text-black"
+            }`}
+          >
+            En cartelera
+          </Button>
+          <Button
+            onClick={() => setFilter("popular")}
+            className={`px-6 py-2 rounded-lg ${
+              filter === "popular"
+                ? "bg-black text-white"
+                : "bg-gray-300 text-black"
+            }`}
+          >
+            Populares
+          </Button>
+          <Button
+            onClick={() => setFilter("upcoming")}
+            className={`px-6 py-2 rounded-lg ${
+              filter === "upcoming"
+                ? "bg-black text-white"
+                : "bg-gray-300 text-black"
+            }`}
+          >
+            Próximos estrenos
+          </Button>
+          <Button
+            onClick={() => setFilter("top_rated")}
+            className={`px-6 py-2 rounded-lg ${
+              filter === "top_rated"
+                ? "bg-black text-white"
+                : "bg-gray-300 text-black"
+            }`}
+          >
+            Mejor valoradas
+          </Button>
+        </div>
+      )}
 
       {/* GRID DE PELÍCULAS */}
       <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -59,6 +136,8 @@ export function Home() {
             poster_path={m.poster_path}
             original_title={m.original_title}
             vote_average={m.vote_average}
+            release_date={m.release_date}
+            overview={m.overview}
           />
         ))}
       </div>
@@ -67,6 +146,17 @@ export function Home() {
 }
 
 export default Home;
+
+
+
+
+
+
+
+
+
+
+
 
 
 {/*       
