@@ -1,12 +1,14 @@
 import {
   HomeIcon,
+  FilmIcon,
+  TvIcon,
   UserCircleIcon,
   TableCellsIcon,
   InformationCircleIcon,
   ServerStackIcon,
   RectangleStackIcon,
 } from "@heroicons/react/24/solid";
-import { Home, Profile, Tables, Notifications } from "@/pages/dashboard";
+import {Movies, Series, Profile, Tables, Notifications } from "@/pages/dashboard";
 import { SignIn, SignUp } from "@/pages/auth";
 
 const icon = {
@@ -18,11 +20,24 @@ export const routes = [
     layout: "dashboard",
     pages: [
       {
-        icon: <HomeIcon {...icon} />,
+        icon: <FilmIcon {...icon} />,
         name: "Movies",
-        path: "/home",
-        element: <Home />,
+        path: "/movies",
+        element: <Movies />,
       },
+
+         {
+        icon: <TvIcon {...icon} />,
+        name: "Series",
+        path: "/series",
+        element: <Series />,
+      },
+      // {
+      //   icon: <HomeIcon {...icon} />,
+      //   name: "Series",
+      //   path: "/series",
+      //   element: <Home />,
+      // },
       // {
       //   icon: <UserCircleIcon {...icon} />,
       //   name: "profile",

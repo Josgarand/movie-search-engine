@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button } from "@material-tailwind/react";
 import { MovieCard } from "@/widgets/cards";
 
-export function Home() {
+export function Movies() {
   const [movies, setMovies] = useState([]);
   const [filter, setFilter] = useState("now_playing"); // por defecto cartelera
   const [search, setSearch] = useState(""); // NUEVO: estado de búsqueda
@@ -134,7 +134,7 @@ export function Home() {
           <MovieCard
             key={m.id}
             poster_path={m.poster_path}
-            original_title={m.original_title}
+            title={m.title}
             vote_average={m.vote_average}
             release_date={m.release_date}
             overview={m.overview}
@@ -145,7 +145,7 @@ export function Home() {
   );
 }
 
-export default Home;
+export default Movies;
 
 
 
