@@ -85,6 +85,17 @@ export function Series() {
       {/* BOTONES DE FILTRO */}
       {!isSearching && (
         <div className="flex flex-wrap gap-4 mb-8 justify-center">
+
+          <Button
+            onClick={() => setFilter("popular")}
+            className={`px-6 py-2 rounded-lg ${
+              filter === "popular"
+                ? "bg-black text-white"
+                : "bg-gray-300 text-black"
+            }`}
+          >
+            Populares
+          </Button>
           <Button
             onClick={() => setFilter("airing_today")}
             className={`px-6 py-2 rounded-lg ${
@@ -105,16 +116,7 @@ export function Series() {
           >
             En emisión
           </Button>
-          <Button
-            onClick={() => setFilter("popular")}
-            className={`px-6 py-2 rounded-lg ${
-              filter === "popular"
-                ? "bg-black text-white"
-                : "bg-gray-300 text-black"
-            }`}
-          >
-            Populares
-          </Button>
+          
           <Button
             onClick={() => setFilter("top_rated")}
             className={`px-6 py-2 rounded-lg ${

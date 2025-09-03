@@ -4,7 +4,7 @@ import { MovieCard } from "@/widgets/cards";
 
 export function Movies() {
   const [movies, setMovies] = useState([]);
-  const [filter, setFilter] = useState("now_playing"); // por defecto cartelera
+  const [filter, setFilter] = useState("popular"); // por defecto cartelera
   const [search, setSearch] = useState(""); // NUEVO: estado de búsqueda
   const [isSearching, setIsSearching] = useState(false); // NUEVO: controla si estamos en modo búsqueda
 
@@ -83,8 +83,21 @@ export function Movies() {
       </div>
 
       {/* BOTONES DE FILTRO (solo activos si NO estoy buscando) */}
+      
       {!isSearching && (
         <div className="flex flex-wrap gap-4 mb-8 justify-center">
+
+        <Button
+            onClick={() => setFilter("popular")}
+            className={`px-6 py-2 rounded-lg ${
+              filter === "popular"
+                ? "bg-black text-white"
+                : "bg-gray-300 text-black"
+            }`}
+          >
+            Populares
+          </Button>
+
           <Button
             onClick={() => setFilter("now_playing")}
             className={`px-6 py-2 rounded-lg ${
@@ -95,16 +108,7 @@ export function Movies() {
           >
             En cartelera
           </Button>
-          <Button
-            onClick={() => setFilter("popular")}
-            className={`px-6 py-2 rounded-lg ${
-              filter === "popular"
-                ? "bg-black text-white"
-                : "bg-gray-300 text-black"
-            }`}
-          >
-            Populares
-          </Button>
+          
           <Button
             onClick={() => setFilter("upcoming")}
             className={`px-6 py-2 rounded-lg ${

@@ -32,6 +32,7 @@ export const routes = [
         path: "/series",
         element: <Series />,
       },
+      
       // {
       //   icon: <HomeIcon {...icon} />,
       //   name: "Series",
