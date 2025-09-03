@@ -22,16 +22,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
 
   return (
     <>
-      {/* Botón para ABRIR sidenav en móvil */}
-      {/* {!openSidenav && (
-        <IconButton
-          variant="text"
-          className="fixed top-4 left-4 z-50 xl:hidden bg-white shadow-md"
-          onClick={() => setOpenSidenav(dispatch, true)}
-        >
-          <Bars3Icon className="h-5 w-5 text-blue-gray-800" />
-        </IconButton>
-      )} */}
+  
 
       <aside
         className={`${sidenavTypes[sidenavType]} ${
@@ -50,13 +41,13 @@ export function Sidenav({ brandImg, brandName, routes }) {
 
           {/* Botón para CERRAR sidenav en móvil */}
         <IconButton
-  variant="text"
-  size="sm"
-  ripple={false}
-  className="absolute right-3 top-3 z-50 xl:hidden text-blue-gray-800"
-  onClick={() => setOpenSidenav(dispatch, false)}
->
-  <XMarkIcon className="h-6 w-6" />
+            variant="text"
+            size="sm"
+            ripple={false}
+            className="absolute right-3 top-3 z-50 xl:hidden text-blue-gray-800"
+            onClick={() => setOpenSidenav(dispatch, false)}
+        >
+      <XMarkIcon className="h-6 w-6" />
 </IconButton>
 
 
