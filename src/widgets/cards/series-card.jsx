@@ -10,6 +10,7 @@ import {
 } from "@material-tailwind/react";
 import { TvModal } from "../modal/tv-modal";
 import { CalendarIcon } from "@heroicons/react/24/solid";
+const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 
 export function SeriesCard({ poster_path, name, vote_average, first_air_date, overview, id }) {
   const [open, setOpen] = useState(false);
@@ -19,7 +20,7 @@ export function SeriesCard({ poster_path, name, vote_average, first_air_date, ov
     if (!open && !tvDetails) {
       try {
         const res = await fetch(
-          `https://api.themoviedb.org/3/tv/${id}?api_key=ffa3a8b6f577c6aefd2d2a8540752b2d&language=en-US`
+          `https://api.themoviedb.org/3/tv/${id}?api_key=${API_KEY}&language=en-US`
         );
         const data = await res.json();
         setTvDetails(data);

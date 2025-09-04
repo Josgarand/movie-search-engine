@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@material-tailwind/react";
 import { SeriesCard } from "@/widgets/cards/series-card";
+const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 
 export function Series() {
   const [series, setSeries] = useState([]);
@@ -12,7 +13,7 @@ export function Series() {
     if (isSearching) return;
 
     fetch(
-      `https://api.themoviedb.org/3/tv/${filter}?api_key=ffa3a8b6f577c6aefd2d2a8540752b2d&language=en-US`
+      `https://api.themoviedb.org/3/tv/${filter}?api_key=${API_KEY}&language=en-US`
     )
       .then((res) => res.json())
       .then((data) => {
@@ -31,7 +32,7 @@ export function Series() {
     setIsSearching(true);
 
     fetch(
-      `https://api.themoviedb.org/3/search/tv?api_key=ffa3a8b6f577c6aefd2d2a8540752b2d&language=en-US&query=${encodeURIComponent(
+      `https://api.themoviedb.org/3/search/tv?api_key=${API_KEY}&language=en-US&query=${encodeURIComponent(
         search
       )}&page=1`
     )

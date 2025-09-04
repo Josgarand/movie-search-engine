@@ -10,6 +10,7 @@ import {
 } from "@material-tailwind/react";
 import { CalendarIcon } from "@heroicons/react/24/solid";
 import { MovieModal } from "../modal/movie-modal";
+const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 
 export function MovieCard({ poster_path, title, vote_average, release_date, id }) {
   const [open, setOpen] = useState(false);
@@ -19,7 +20,7 @@ export function MovieCard({ poster_path, title, vote_average, release_date, id }
     if (!open) {
       try {
         const res = await fetch(
-          `https://api.themoviedb.org/3/movie/${id}?api_key=ffa3a8b6f577c6aefd2d2a8540752b2d&language=en-US`
+          `https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}&language=en-US`
         );
         const data = await res.json();
         setMovieData(data);
